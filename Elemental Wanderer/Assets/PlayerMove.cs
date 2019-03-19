@@ -13,8 +13,11 @@ public class PlayerMove : MonoBehaviour
 
     public float jumpForce = 3;
 
+    public float bounce = 2;
+
     bool rightPressed;
     bool leftPressed;
+    bool feetTouching;
 
     // Start is called before the first frame update
     void Start()
@@ -29,8 +32,11 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && feetTouching)
+        {
             body.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+            feetTouching = false;
+        }
             
         if(Input.GetKeyDown(KeyCode.D))
         {
@@ -65,6 +71,12 @@ public class PlayerMove : MonoBehaviour
         else
             body.velocity = new Vector2(0, body.velocity.y);
 
-        Debug.Log(body.velocity.x + " " + body.velocity.y);
+        //Debug.Log(body.velocity.x + " " + body.velocity.y);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        feetTouching = GetComponent<Collider2D>().GetType() == typeof(CircleCollider2D);
+        //body.velocity = new Vector2(body.velocity.x, bounce);
     }
 }
